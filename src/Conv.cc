@@ -63,12 +63,13 @@ void Conv::Close()
 	close(fd);
 }
 
-int Conv::Convert(uint8_t *instr)
+std::string Conv::Convert(uint8_t *instr)
 {
 	int i = 0;
 	int l = 0;
 	int len = 0;
 	int strsize = strlen((const char*)instr);
+	std::string retstr;
 	std::stringstream ss;
 	char rcvbuf[RECV_BUF_SIZE];
 	
@@ -107,25 +108,26 @@ int Conv::Convert(uint8_t *instr)
 	len = read(fd, rcvbuf, RECV_BUF_SIZE);
 	if (len == 0) {
 		perror("gion: receive");
-		return(len);
+		return(retstr);
 	}
 	
+	/* Jsonパース処理は別関数で処理させたいけどとりあえず。。。 */
 	picojson::value v;
 	picojson::parse(v, rcvbuf);
 	std::string err = picojson::get_last_error();
 	if(!err.empty()) {
 		perror("gion: json parse error");
-		return(0);
+		return(retstr);
 	}
 	picojson::object &obj = v.get<picojson::object>();
 	picojson::array &kkci_seq = obj["kkciSequence"].get<picojson::array>();
 	for (picojson::array::iterator it = kkci_seq.begin(); it != kkci_seq.end(); ++it) {
 		picojson::object& tmpObject = it->get<picojson::object>();
 		int tokenid = (int)tmpObject["token"].get<double>();
-		convstr.append(WordIntStr[tokenid]);
+		retstr.append(WordIntStr[tokenid]);
 	}
-	
-	return(len);
+
+	return(retstr);
 }
 
 int Conv::CreateSock()

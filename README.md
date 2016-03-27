@@ -7,10 +7,10 @@ TKD53/Lime用クライアントライブラリ
 
 Cmake を利用します。  
 
-mkdir build  
-cd build  
-cmake ..  
-make  
+$ mkdir build  
+$ cd build  
+$ cmake ..  
+$ make  
 
 ## サーバーとの接続方法
 

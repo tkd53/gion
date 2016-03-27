@@ -36,12 +36,11 @@ public:
 	Conv();
 	virtual ~Conv();
 	int Open();
-	int Convert(uint8_t *instr);
+	std::string Convert(uint8_t *instr);
 	void Close();
 	
 	static const int RECV_BUF_SIZE = 1024;
 	static const int UTF8_MEMSIZE = 8;
-	std::string convstr;
 
 private:
 	int CreateSock();

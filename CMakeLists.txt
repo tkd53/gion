@@ -3,6 +3,9 @@ project(gion)
 
 SET(GION_SOCKFD_PATH "/tmp/lime_sock")
 
+# Sampleプログラムをビルドする場合は「ON」にしてください
+SET(SAMPLE_BUILD ON)
+
 #select the release build type by default to get optimization flags
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
@@ -23,5 +26,8 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/include/config.hh.in ${PROJECT_SOURCE_DIR}/include/config.hh)
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(sample)
 
+# Sample Build
+if(SAMPLE_BUILD)
+  ADD_SUBDIRECTORY(sample)
+endif()

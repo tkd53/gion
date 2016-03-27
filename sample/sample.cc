@@ -24,14 +24,23 @@
 
 using namespace gion;
 
-int main()
+int main(int argc, char *argv[])
 {
 	Conv conv;
+	std::string convstr;
+	int ret = 0;
 	
-	conv.Open();
-	conv.Convert((uint8_t *)"わたしのなまえはなかのです");
-	std::cout << conv.convstr << std::endl;
-	conv.Close();
+	if (1 < argc) {
+		conv.Open();
+		convstr = conv.Convert((uint8_t *)argv[1]);
+		conv.Close();
 	
+		std::cout << convstr << std::endl;
+	}
+	else {
+		std::cout << "gion: 引数に「よみ」をいれてください" << std::endl;
+		ret = -1;
+	}
+
 	return(0);
 }
