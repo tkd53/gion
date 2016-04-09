@@ -27,20 +27,33 @@ using namespace gion;
 int main(int argc, char *argv[])
 {
 	Conv conv;
+	uint8_t instr[1024];
 	std::string convstr;
-	int ret = 0;
 	
-	if (1 < argc) {
-		conv.Open();
-		convstr = conv.Convert((uint8_t *)argv[1]);
-		conv.Close();
+	// gionlib Open
+	conv.Open();
 	
-		std::cout << convstr << std::endl;
+	if (argc == 1) {
+		while(1) {
+			// 入力待ち
+			std::cout << "> ";
+			std::cin >> instr;		
+			if (instr[0] == 'q')
+				break;
+			
+			// 入力されたひらがなを変換
+			convstr = conv.Convert(instr);
+			std::cout << convstr << std::endl;
+		}
 	}
 	else {
-		std::cout << "gion: 引数に「よみ」をいれてください" << std::endl;
-		ret = -1;
+		// 引数のひらがなを変換
+		convstr = conv.Convert((uint8_t *)argv[1]);
+		std::cout << convstr << std::endl;
 	}
+
+	// gionlib close
+	conv.Close();
 
 	return(0);
 }
