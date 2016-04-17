@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 TKD53/Lime Project
+/* Copyright (c) 2016 Masahiko HASHIMOTO
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,25 @@
 
 using namespace gion;
 
+
+void output(Conv *convobj, char *instr)
+{
+	const char *retstr;
+	
+	retstr = convobj->Convert(instr);
+	if (retstr != NULL)
+		std::cout << retstr << std::endl;
+	else
+		std::cout << "Conv Faild!!" << std::endl;
+}
+
+
 int main(int argc, char *argv[])
 {
 	Conv conv;
-	uint8_t instr[1024];
-	std::string convstr;
+	char instr[1024];
+	char *retstr;
+	int retlen;
 	
 	// gionlib Open
 	conv.Open();
@@ -42,14 +56,12 @@ int main(int argc, char *argv[])
 				break;
 			
 			// 入力されたひらがなを変換
-			convstr = conv.Convert(instr);
-			std::cout << convstr << std::endl;
+			output(&conv, instr);
 		}
 	}
 	else {
 		// 引数のひらがなを変換
-		convstr = conv.Convert((uint8_t *)argv[1]);
-		std::cout << convstr << std::endl;
+		output(&conv, instr);
 	}
 
 	// gionlib close

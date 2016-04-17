@@ -3,7 +3,7 @@ WordIntStrfilename=$1
 tblfilename=$2
 linenum=`wc -l ${WordIntStrfilename} | awk '{ print $1 }'`
 
-echo "/* Copyright (c) 2016 TKD53/Lime Project
+echo "/* Copyright (c) 2016 Masahiko HASHIMOTO
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

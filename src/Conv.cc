@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 TKD53/Lime Project
+/* Copyright (c) 2016 Masahiko HASHIMOTO
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,7 +20,6 @@
 */
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <iostream>
 #include <sstream>
 #include <unistd.h>
 #include "config.hh"
@@ -63,37 +62,37 @@ void Conv::Close()
 	close(fd);
 }
 
-std::string Conv::Convert(uint8_t *instr)
+const char *Conv::Convert(char *instr)
 {
 	int i = 0;
 	int l = 0;
 	int len = 0;
 	int strsize = strlen((const char*)instr);
-	std::string retstr;
 	std::stringstream ss;
 	char rcvbuf[RECV_BUF_SIZE];
+	std::string convstr;
 	
 	/* JSON作成 */
 	ss << "{\"command\":\"CONVERT\",\"kkciSequence\":[";
 	while(i < strsize){
 		/* UTF-8の文字コード1byte目から長さを判定 */
-		if (instr[i] < 0x80)
+		if ((unsigned char)instr[i] < 0x80)
 			len = 1;
-		else if(instr[i] < 0xE0)
+		else if((unsigned char)instr[i] < 0xE0)
 			len = 2;
-		else if(instr[i] < 0xF0)
+		else if((unsigned char)instr[i] < 0xF0)
 			len = 3;
-		else if(instr[i] < 0xF8)
+		else if((unsigned char)instr[i] < 0xF8)
 			len = 4;
-		else if(instr[i] < 0xFC)
+		else if((unsigned char)instr[i] < 0xFC)
 			len = 5;
-		else if(instr[i] < 0xFE)
+		else if((unsigned char)instr[i] < 0xFE)
 			len = 6;
 		else
 			break;
 		
 		for (l = 0; l < KKCIINTSTR_SIZE; l++) {
-			if (strncmp((const char*)(instr + i), (const char*)KkciIntStr[l], len) == 0) {
+			if (strncmp((instr + i), KkciIntStr[l], len) == 0) {
 				ss << l;
 				i += len;
 				if (i != strsize)
@@ -108,7 +107,7 @@ std::string Conv::Convert(uint8_t *instr)
 	len = read(fd, rcvbuf, RECV_BUF_SIZE);
 	if (len == 0) {
 		perror("gion: receive");
-		return(retstr);
+		return(NULL);
 	}
 	
 	/* Jsonパース処理は別関数で処理させたいけどとりあえず。。。 */
@@ -117,17 +116,17 @@ std::string Conv::Convert(uint8_t *instr)
 	std::string err = picojson::get_last_error();
 	if(!err.empty()) {
 		perror("gion: json parse error");
-		return(retstr);
+		return(NULL);
 	}
 	picojson::object &obj = v.get<picojson::object>();
 	picojson::array &kkci_seq = obj["kkciSequence"].get<picojson::array>();
 	for (picojson::array::iterator it = kkci_seq.begin(); it != kkci_seq.end(); ++it) {
 		picojson::object& tmpObject = it->get<picojson::object>();
 		int tokenid = (int)tmpObject["token"].get<double>();
-		retstr.append(WordIntStr[tokenid]);
+		convstr.append(WordIntStr[tokenid]);
 	}
 
-	return(retstr);
+	return(convstr.c_str());
 }
 
 int Conv::CreateSock()

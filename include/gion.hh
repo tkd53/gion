@@ -1,4 +1,4 @@
-/* Copyright (c) 2016 TKD53/Lime Project
+/* Copyright (c) 2016 Masahiko HASHIMOTO
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,6 @@
 #ifndef GION_HH
 #define GION_HH
 
-#include <cstdint>
-
 namespace gion {
 
 enum {
@@ -36,7 +34,7 @@ public:
 	Conv();
 	virtual ~Conv();
 	int Open();
-	std::string Convert(uint8_t *instr);
+	const char *Convert(char *instr);
 	void Close();
 	
 	static const int RECV_BUF_SIZE = 1024;

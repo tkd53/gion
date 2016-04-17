@@ -3,7 +3,7 @@ KkciIntStrfilename=$1
 tblfilename=$2
 linenum=`wc -l ${KkciIntStrfilename} | awk '{ print $1 }'`
 
-echo "/* Copyright (c) 2016 TKD53/Lime Project
+echo "/* Copyright (c) 2016 Masahiko HASHIMOTO
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ echo "" >> ${tblfilename}
 echo "#define KKCIINTSTR_SIZE (${linenum})" >> ${tblfilename}
 echo "" >> ${tblfilename}
 
-echo "uint8_t KkciIntStr[KKCIINTSTR_SIZE][8] {" >> ${tblfilename}
+echo "const char KkciIntStr[KKCIINTSTR_SIZE][8] {" >> ${tblfilename}
 
 while read line ; do
   echo "  {\"${line}\"}," >> ${tblfilename}
