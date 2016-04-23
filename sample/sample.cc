@@ -41,8 +41,6 @@ int main(int argc, char *argv[])
 {
 	Conv conv;
 	char instr[1024];
-	char *retstr;
-	int retlen;
 	
 	// gionlib Open
 	conv.Open();

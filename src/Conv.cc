@@ -42,13 +42,13 @@ int Conv::Open()
 {
 	int ret = GION_ERR;
 	
-	/* create socket */
+	// create socket
 	ret = CreateSock();
 	if (ret == GION_ERR) {
 		goto last;
 	}
 	
-	/* dic create */
+	// dic create
 	/* 現状 WordIntStr.h を使用しているため辞書作成は行っていない */
 	/* 規模が大きくなったら考える。。。 */
 	
@@ -72,10 +72,10 @@ const char *Conv::Convert(char *instr)
 	char rcvbuf[RECV_BUF_SIZE];
 	std::string convstr;
 	
-	/* JSON作成 */
+	// JSON作成
 	ss << "{\"command\":\"CONVERT\",\"kkciSequence\":[";
 	while(i < strsize){
-		/* UTF-8の文字コード1byte目から長さを判定 */
+		// UTF-8の文字コード1byte目から長さを判定
 		if ((unsigned char)instr[i] < 0x80)
 			len = 1;
 		else if((unsigned char)instr[i] < 0xE0)
@@ -110,7 +110,8 @@ const char *Conv::Convert(char *instr)
 		return(NULL);
 	}
 	
-	/* Jsonパース処理は別関数で処理させたいけどとりあえず。。。 */
+	// Jsonパース処理は別関数で処理させたいけどとりあえず。。。
+	// resultについても今は見ないが、関数化した時に見直したい。
 	picojson::value v;
 	picojson::parse(v, rcvbuf);
 	std::string err = picojson::get_last_error();
@@ -119,7 +120,7 @@ const char *Conv::Convert(char *instr)
 		return(NULL);
 	}
 	picojson::object &obj = v.get<picojson::object>();
-	picojson::array &kkci_seq = obj["kkciSequence"].get<picojson::array>();
+	picojson::array &kkci_seq = obj["nodeSequence"].get<picojson::array>();
 	for (picojson::array::iterator it = kkci_seq.begin(); it != kkci_seq.end(); ++it) {
 		picojson::object& tmpObject = it->get<picojson::object>();
 		int tokenid = (int)tmpObject["token"].get<double>();
